@@ -76,6 +76,7 @@ if (!module.parent && process.env.NODE_ENV === 'development') {
     app.listen(3000);
     console.log('Express started on port 3000');
 } else if(!module.parent) {
-    app.listen(80);
+	var port = process.env.PORT || 80;
+    app.listen(port);
     console.log('Express started on port 80');
 }
