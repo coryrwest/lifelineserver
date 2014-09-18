@@ -15,6 +15,9 @@
     "restler": "^3.2.2"
   },
   "engines": {
-    "node": "0.10.32"
+    "node": "0.10.31"
+  },
+  "scripts": {
+	"start": "node server.js",
   }
 }
