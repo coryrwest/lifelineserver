@@ -72,7 +72,7 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 /* istanbul ignore next */
-if (!module.parent && app.get('env') === 'development') {
+if (!module.parent && process.env.NODE_ENV === 'development') {
     app.listen(3000);
     console.log('Express started on port 3000');
 } else if(!module.parent) {
