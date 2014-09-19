@@ -26,9 +26,12 @@
     <script>
         var app = angular.module('charting', ['ngResource']);
 
+        var dateRange = getDateRange(14);
+
         app.controller('ChartCtrl', ['$scope', 'dataService', function ($scope, dataService) {
             dataService.getList({object: 'pick'}, function(obj) {
-                        var data = formatDataForGraph(obj, 'pick');
+                var pick = formatDataForGraph(obj, 'pick');
+                var sore = formatDataForGraph(obj, 'sore');
                         $(function () {
                             $('#pick').highcharts({
                                 chart: {
@@ -38,14 +41,25 @@
                                     text: ''
                                 },
                                 xAxis: {
-                                    categories: data[0]
+                                    categories: dateRange
                                 },
                                 yAxis: {
                                     title: {
                                         text: 'Frequency'
                                     }
                                 },
-                                series: [data[1]]
+                                series: [
+                                    {
+                                        type: 'column',
+                                        name: 'pick',
+                                        data: pick
+                                    },
+                                    {
+                                        type: 'line',
+                                        name: 'sore',
+                                        data: sore
+                                    }
+                                ]
                             });
                         });
             });
@@ -53,7 +67,7 @@
             dataService.getList({object: 'water'}, function(obj) {
                         var data = formatDataForGraph(obj, 'water');
                         var minLine = [];
-                        data[0].each(function(n) {
+                        dateRange.each(function(n) {
                             minLine.push(5);
                         })
                         $(function () {
@@ -62,7 +76,7 @@
                                     text: ''
                                 },
                                 xAxis: {
-                                    categories: data[0]
+                                    categories: dateRange
                                 },
                                 yAxis: {
                                     title: {
@@ -72,8 +86,8 @@
                                 series: [
                                     {
                                         type: 'line',
-                                        name: data[1].name,
-                                        data: data[1].data
+                                        name: 'water',
+                                        data: data
                                     },
                                     {
                                         type: 'line',
@@ -96,7 +110,7 @@
                                     text: ''
                                 },
                                 xAxis: {
-                                    categories: data[0]
+                                    categories: dateRange
                                 },
                                 yAxis: {
                                     title: {

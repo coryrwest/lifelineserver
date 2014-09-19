@@ -8,7 +8,7 @@ var get = exports.get = {};
 get.list = function(object_name, name, success) {
     var params = {
         limit: 100,
-        order: '-createdAt'
+        order: '-date'
     };
 
     db.getObjects(object_name, params, function(err, res, body, suc){
