@@ -1,5 +1,5 @@
 // https://github.com/shiki/kaiseki
-
+var moment = require('moment-timezone');
 // parse database
 var parse = require('kaiseki');
 var db = new parse("JSBJdPtSWQFxEg6jyX8UcNYh9dmXPPfqgSM2wZsu", "05ewwHMwWu88RAxIfKZ9XeaHLhUMz3sEfvHNDegA");
@@ -24,8 +24,7 @@ get.single = function(object_name, id, success) {
 var save = exports.save = {};
 save.insert = function(object_name, object, success) {
     // Add date to object
-    var date = new Date();
-    object.insertDate = date.toISOString();
+    object.date = object.date || moment().tz("America/Los_Angeles").format("MM-DD-YYYY HH:mma z");
     db.createObject(object_name, object, function(err, res, body, suc) {
         if(success) {
             success(body);
