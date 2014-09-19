@@ -53,12 +53,13 @@
                                         type: 'column',
                                         name: 'pick',
                                         data: pick
-                                    },
-                                    {
-                                        type: 'line',
-                                        name: 'sore',
-                                        data: sore
                                     }
+//                                    ,
+//                                    {
+//                                        type: 'line',
+//                                        name: 'sore',
+//                                        data: sore
+//                                    }
                                 ]
                             });
                         });
@@ -103,9 +104,6 @@
                         var data = formatWeatherDataForGraph(obj, 'weather');
                         $(function () {
                             $('#weather').highcharts({
-                                chart: {
-                                    type: 'line'
-                                },
                                 title: {
                                     text: ''
                                 },
@@ -117,7 +115,11 @@
                                         text: 'Temp'
                                     }
                                 },
-                                series: [data[1]]
+                                series: [{
+                                    type: 'line',
+                                    name: 'temp',
+                                    data: data
+                                }]
                             });
                         });
                     });
