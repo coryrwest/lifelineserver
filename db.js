@@ -29,7 +29,7 @@ var save = exports.save = {};
 save.insert = function(object_name, object, success) {
     // Add date to object
     object.date = object.date || moment().tz("America/Los_Angeles").format("MM-DD-YYYY HH:mma z");
-    object.dateComparator = object.dateComparator || moment().format('X');
+    object.dateComparator = +object.dateComparator || +moment().format('X');
     db.createObject(object_name, object, function(err, res, body, suc) {
         if(success) {
             success(body);
