@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db');
 
-router.get('/:object', function(req, res) {
+router.get('/:object/:limit', function(req, res) {
     var success = function(data) {
         res.json(200, data);
     };
-    db.get.list(req.params.object, null, success);
+    db.get.list(req.params.object, null, req.params.limit, success);
 });
 
 router.get('/:object/:id', function(req, res) {

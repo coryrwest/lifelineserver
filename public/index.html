@@ -26,10 +26,10 @@
     <script>
         var app = angular.module('charting', ['ngResource']);
 
-        var dateRange = getDateRange(14);
+        var dateRange = getDateRange(numberDays);
 
         app.controller('ChartCtrl', ['$scope', 'dataService', function ($scope, dataService) {
-            dataService.getList({object: 'pick'}, function(obj) {
+            dataService.getList({object: 'pick', limit: numberDays * 7}, function(obj) {
                 var pick = formatDataForGraph(obj, 'pick');
                 var sore = formatDataForGraph(obj, 'sore');
                         $(function () {
@@ -65,7 +65,7 @@
                         });
             });
 
-            dataService.getList({object: 'water'}, function(obj) {
+            dataService.getList({object: 'water', limit: numberDays * 7}, function(obj) {
                         var data = formatDataForGraph(obj, 'water');
                         var minLine = [];
                         dateRange.each(function(n) {
@@ -100,7 +100,7 @@
                         });
             });
 
-            dataService.getList({object: 'weather_data'}, function(obj) {
+            dataService.getList({object: 'weather_data', limit: numberDays * 24}, function(obj) {
                         var data = formatWeatherDataForGraph(obj, 'weather');
                         $(function () {
                             $('#weather').highcharts({
@@ -126,7 +126,7 @@
         }]);
 
         app.factory('dataService', ['$q', '$resource', function ($q, $resource) {
-            return $resource('data/:object/', { object: '@object' }, {
+            return $resource('data/:object/:limit', { object: '@object', limit: '@limit' }, {
                 getList: { method: 'GET', isArray: true }
             });
         }]);
@@ -169,7 +169,7 @@
                 <!--&lt;!&ndash;<li><a href="">More navigation</a></li>&ndash;&gt;-->
             <!--&lt;!&ndash;</ul>&ndash;&gt;-->
         <!--</div>-->
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-sm-12 main">
             <h1 class="page-header">Dashboard</h1>
 
             <div class="row placeholders" ng-controller="ChartCtrl">

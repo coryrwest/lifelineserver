@@ -1,3 +1,5 @@
+var numberDays = 20;
+
 function formatParseDate(date) {
     return moment(date, "MM-DD-YYYY HH:mma");
 }
@@ -21,7 +23,7 @@ function formatDataForGraph(obj, objName) {
     for(var i = 0; i <= obj.length - 1; i++) {
         if (obj[i].date != undefined) {
             var date = formatParseDate(obj[i].date);
-            if(date >= moment().subtract(14, 'days')) {
+            if(date >= moment().subtract(numberDays, 'days')) {
                 date = date.format("M-D");
                 dates.push(date);
                 values.push({value: obj[i].value, date: date});
@@ -34,7 +36,7 @@ function formatDataForGraph(obj, objName) {
         newValues.push([cur, values[cur].length]);
     });
 
-    newValues = normalizeData(newValues, getDateRange(14));
+    newValues = normalizeData(newValues, getDateRange(numberDays));
 
     return newValues;
 }
@@ -62,7 +64,7 @@ function formatWeatherDataForGraph(obj, objName) {
         values.push([key, highestTemp]);
     }
 
-    values = normalizeData(values, getDateRange(14));
+    values = normalizeData(values, getDateRange(numberDays));
 
     return values;
 }
