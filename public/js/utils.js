@@ -1,4 +1,4 @@
-var numberDays = 20;
+var numberDays = 14;
 
 function formatParseDate(date) {
     return moment(date, "MM-DD-YYYY HH:mma");
