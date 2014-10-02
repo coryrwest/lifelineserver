@@ -36,6 +36,18 @@ save.insert = function(object_name, object, success) {
         }
     });
 };
+save.insertCollection = function(object_name, objects, success) {
+    // Add date to objects
+    for(var i = 0; i <= objects.length - 1; i++) {
+        objects[i].date = objects[i].date || moment().tz("America/Los_Angeles").format("MM-DD-YYYY HH:mma z");
+        objects[i].dateComparator = +objects[i].dateComparator || +moment().format('X');
+    }
+    db.createObjects(object_name, objects, function(err, res, body, suc) {
+        if(success) {
+            success(body);
+        }
+    });
+};
 save.update = function(object_name, id, object, success) {
     db.updateObject(object_name, id, object, function(err, res, body, suc) {
         success(body);
