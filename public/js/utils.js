@@ -8,6 +8,10 @@ function formatParseCreateDate(date) {
     return moment(date, moment.ISO_8601).subtract(7, 'h').format('M-D');
 }
 
+function formatParseCreateDateAsTime(date) {
+    return moment(date, moment.ISO_8601).subtract(7, 'h').format('HH:mm');
+}
+
 function getDateRange(range) {
     var dates = [];
     for(var i = 0; i < range; i++) {
@@ -33,7 +37,7 @@ function formatDataForGraph(obj, objName) {
     values = values.groupBy('date');
     var newValues = [];
     Object.keys(values).each(function(cur, index) {
-        newValues.push([cur, values[cur].length]);
+        newValues.push({name: cur, y: values[cur].length});
     });
 
     newValues = normalizeData(newValues, getDateRange(numberDays));
@@ -61,10 +65,34 @@ function formatWeatherDataForGraph(obj, objName) {
                 highestTemp = +formatTemp(weatherByDate[key][j].temperature);
             }
         }
-        values.push([key, highestTemp]);
+        values.push({name: key, y: highestTemp, drilldown: key});
     }
 
     values = normalizeData(values, getDateRange(numberDays));
+
+    return values;
+}
+
+function formatWeatherDataForDrilldown(obj) {
+    obj = obj.sortBy('createdAt');
+    var values = [];
+    for (var i = 0; i <= obj.length - 1; i++) {
+        obj[i].date = formatParseCreateDate(obj[i].createdAt);
+    }
+    var weatherByDate = obj.groupBy('date');
+
+    for(var k = 0; k <= Object.keys(weatherByDate).length - 1; k++) {
+        var key = Object.keys(weatherByDate)[k];
+        var dayData = [];
+        for(var j = 0; j <= weatherByDate[key].length - 1; j++) {
+            var time = formatParseCreateDateAsTime(weatherByDate[key][j].createdAt);
+            dayData.push([time, +formatTemp(weatherByDate[key][j].temperature)])
+        }
+
+        values.push({id: key, data: dayData});
+    }
+
+    values = normalizeWeatherData(values, getDateRange(numberDays));
 
     return values;
 }
@@ -83,13 +111,33 @@ function normalizeData(data, dates) {
         var exists = false;
         var j;
         for(j = 0; j <= data.length - 1; j++) {
-            if(data[j][0] == n) {
+            if(data[j].name == n) {
                 exists = true;
                 break;
             }
         }
         if(!exists) {
-            return [n, null];
+            return {name: n, y: null};
+        } else {
+            return data[j];
+        }
+    });
+
+    return normalized;
+}
+
+function normalizeWeatherData(data, dates) {
+    var normalized = dates.map(function(n) {
+        var exists = false;
+        var j;
+        for(j = 0; j <= data.length - 1; j++) {
+            if(data[j].id == n) {
+                exists = true;
+                break;
+            }
+        }
+        if(!exists) {
+            return {id: n, data:[]};
         } else {
             return data[j];
         }
