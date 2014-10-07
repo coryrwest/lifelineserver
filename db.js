@@ -28,7 +28,7 @@ get.single = function(object_name, id, success) {
 
         db.getObjects(object_name, params, function(err, res, body, suc){
             var date = body[0].date.substring(0, 10);
-            var today = moment().format('MM-DD-YYYY');
+            var today = moment().tz("America/Los_Angeles").format("MM-DD-YYYY");
             if (today == date) {
                 success(body);
             } else {
