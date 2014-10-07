@@ -9,7 +9,7 @@ router.get('/:object/:limit', function(req, res) {
     db.get.list(req.params.object, null, req.params.limit, success);
 });
 
-router.get('/:object/:id', function(req, res) {
+router.get('/:object/single/:id', function(req, res) {
     var id = req.params.id;
     var success = function(data) {
         res.json(200, data);

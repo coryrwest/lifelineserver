@@ -20,9 +20,26 @@ get.list = function(object_name, name, limit, success) {
     });
 };
 get.single = function(object_name, id, success) {
-    db.getObject(object_name, id, function(err, res, body, suc){
-        success(body);
-    });
+    if(id.indexOf("today") != -1) {
+        var params = {
+            order: '-date',
+            limit: 1
+        };
+
+        db.getObjects(object_name, params, function(err, res, body, suc){
+            var date = body[0].date.substring(0, 10);
+            var today = moment().format('MM-DD-YYYY');
+            if (today == date) {
+                success(body);
+            } else {
+                success(null);
+            }
+        });
+    } else {
+        db.getObject(object_name, id, function(err, res, body, suc){
+            success(body);
+        });
+    }
 };
 
 var save = exports.save = {};
