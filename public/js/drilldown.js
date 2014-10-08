@@ -488,7 +488,12 @@
 			drilldown = chart.options.drilldown,
 			i = (drilldown.series || []).length,
 			seriesOptions;
-		
+
+        // Debug stuff
+        if (chart.userOptions.debug) {
+            console.log(drilldown.series);
+        }
+
 		while (i-- && !seriesOptions) {
 			if (drilldown.series[i].id === this.drilldown && inArray(this.drilldown, dupes) === -1) {
 				seriesOptions = drilldown.series[i];

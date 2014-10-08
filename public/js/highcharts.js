@@ -10699,6 +10699,14 @@ Chart.prototype = {
 		var options,
 			seriesOptions = userOptions.series; // skip merging data points to increase performance
 
+        // Debugging stuff
+        if (userOptions.debug) {
+            console.log(seriesOptions);
+            if (userOptions.drilldown) {
+                console.log(userOptions.drilldown);
+            }
+        }
+
 		userOptions.series = null;
 		options = merge(defaultOptions, userOptions); // do the merge
 		options.series = userOptions.series = seriesOptions; // set back the series data
