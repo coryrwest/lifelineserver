@@ -1,9 +1,12 @@
 var weather = require('./dataModules/weatherUnderground.js');
 var db = require('./db');
+var cron = require('cron').CronJob;
 
 var jobs = {};
-jobs.weather = function(interval) {
-    setInterval(getWeatherData, minutesToMS(interval));
+jobs.weather = function(cronPattern) {
+    new cron(cronPattern, function(){
+        getWeatherData();
+    }, null, true, null);
 };
 
 module.exports = jobs;
@@ -31,8 +34,3 @@ var getWeatherData = function() {
     var wu = new weather('pws:KCAMURRI9');
     wu.getData(complete);
 };
-
-// Helpers
-function minutesToMS(minute) {
-    return (minute * 60 * 1000);
-}

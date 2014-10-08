@@ -33,7 +33,7 @@ app.use(express.static(__dirname + '/public'));
 
 // Jobs
 var jobs = require('./jobs');
-jobs.weather(60);
+jobs.weather('0 0 * * * *');
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
