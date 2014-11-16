@@ -9,18 +9,6 @@ var today = moment().tz("America/Los_Angeles").format("MM-DD-YYYY");
 // --- GET ---
 // -----------
 var get = exports.get = {};
-get.list = function(object_name, name, limit, success) {
-    if(limit == undefined || limit == null) {
-        limit = 50;
-    }
-    var params = {
-        order: '-date',
-        limit: limit
-        //where: { dateComparator: {$gte: moment().subtract(20, 'd').format("X"), $lte: moment().format("X")} }
-    };
-
-    get.list(object_name, params, success);
-};
 get.list = function(object_name, params, success) {
     db.getObjects(object_name, params, function(err, res, body, suc){
         success(body);

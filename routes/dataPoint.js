@@ -8,7 +8,13 @@ router.get('/:object/:limit', function(req, res) {
     var success = function(data) {
         res.json(200, data);
     };
-    db.get.list(req.params.object, null, req.params.limit, success);
+
+    var params = {
+        order: '-date',
+        limit: req.params.limit
+    };
+
+    db.get.list(req.params.object, params, success);
 });
 
 router.get('/:object/single/:id', function(req, res) {

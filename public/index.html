@@ -32,7 +32,7 @@
         var dateRange = getDateRange(numberDays);
 
         app.controller('ChartCtrl', ['$scope', 'dataService', function ($scope, dataService) {
-            dataService.getList({object: 'pick', limit: numberDays * 7}, function(obj) {
+            dataService.getList({object: 'pick', limit: numberDays}, function(obj) {
                 var pick = formatDataForGraph(obj, dateRange);
                         $(function () {
                             $('#pick').highcharts({
@@ -61,11 +61,11 @@
                         });
             });
 
-            dataService.getList({object: 'water', limit: numberDays * 7}, function(water) {
-                dataService.getList({object: 'sore', limit: numberDays * 7}, function(sore) {
+            dataService.getList({object: 'water', limit: numberDays}, function(water) {
+                dataService.getList({object: 'sore', limit: numberDays}, function(sore) {
                     var data = formatDataForGraph(water, dateRange);
                     var sore = formatDataForGraph(sore, dateRange);
-                    var minLine = generateMinLine(dateRange, 5);
+                    var minLine = generateMinLine(dateRange, 4);
 
                     $(function () {
                         $('#water').highcharts({
@@ -103,8 +103,10 @@
             });
 
             dataService.getList({object: 'weather_data', limit: numberDays * 24}, function(obj) {
-                var data = formatWeatherDataForGraph(obj, dateRange);
-                var drilldown = formatWeatherDataForDrilldown(obj, dateRange);
+                dataService.getList({object: 'energy_usage', limit: numberDays * 24}, function(energy) {
+                    var weatherData = formatWeatherDataForGraph(obj, dateRange);
+                    var energyData = formatEnergyDataForGraph(energy, dateRange);
+                    var drilldown = formatWeatherDataForDrilldown(obj, dateRange);
                         $(function () {
                             $('#weather').highcharts({
                                 title: {
@@ -121,14 +123,19 @@
                                 series: [{
                                     type: 'line',
                                     name: 'temp',
-                                    data: data
+                                    data: weatherData
+                                }, {
+                                    type: 'column',
+                                    name: 'energy',
+                                    data: energyData
                                 }],
                                 drilldown: {
                                     series: drilldown
                                 }
                             });
                         });
-                    });
+                });
+            });
         }]);
 
         app.factory('dataService', ['$q', '$resource', function ($q, $resource) {

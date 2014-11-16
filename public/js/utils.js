@@ -1,7 +1,7 @@
 var numberDays = 14;
 
 function formatDataForGraph(obj, dateRange) {
-    var dates = [], values = [];
+    var values = [];
 
     obj = obj.sortBy('date');
     obj = formatDataSetDates(obj, 'date');
@@ -11,20 +11,14 @@ function formatDataForGraph(obj, dateRange) {
             var date = obj[i].date;
             if(date >= moment().subtract(numberDays, 'days')) {
                 date = date.format("M-D");
-                dates.push(date);
-                values.push({value: obj[i].value, date: date});
+                values.push({y: +obj[i].value, name: date});
             }
         }
     }
-    values = values.groupBy('date');
-    var newValues = [];
-    Object.keys(values).each(function(cur, index) {
-        newValues.push({name: cur, y: values[cur].length});
-    });
 
-    newValues = normalizeData(newValues, dateRange);
+    values = normalizeData(values, dateRange);
 
-    return newValues;
+    return values;
 }
 
 function formatWeatherDataForGraph(obj, dateRange) {
@@ -52,6 +46,33 @@ function formatWeatherDataForGraph(obj, dateRange) {
     values = normalizeData(values, dateRange);
 
     return values;
+}
+
+function formatEnergyDataForGraph(obj, dateRange) {
+    obj = obj.sortBy('startTime');
+    obj = formatDataSetDates(obj, 'startTimeFormatted');
+
+//    var values = [];
+//    var weatherByDate = obj.groupBy('date');
+//    // Get average temp for day
+//    for(var k = 0; k <= Object.keys(weatherByDate).length - 1; k++) {
+//        var key = Object.keys(weatherByDate)[k];
+//        var highestTemp = 0;
+//        for (var j = 0; j <= weatherByDate[key].length - 1; j++) {
+//            if (j != 0) {
+//                if (highestTemp < +formatTemp(weatherByDate[key][j - 1].temperature)) {
+//                    highestTemp = +formatTemp(weatherByDate[key][j - 1].temperature);
+//                }
+//            } else {
+//                highestTemp = +formatTemp(weatherByDate[key][j].temperature);
+//            }
+//        }
+//        values.push({name: key, y: highestTemp, drilldown: key});
+//    }
+//
+//    values = normalizeData(values, dateRange);
+//
+//    return values;
 }
 
 function formatWeatherDataForDrilldown(obj, dateRange) {
