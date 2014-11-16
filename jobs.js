@@ -18,7 +18,7 @@ var getWeatherData = function() {
         data = data['current_observation'];
         var filteredData = {
             'location' : data['observation_location'],
-            'time' : data['observation_time'],
+            'observation_time' : data['observation_time'],
             'weather' : data['weather'],
             'temperature' : data['temperature_string'],
             'humidity' : data['relative_humidity'],
