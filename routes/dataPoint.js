@@ -18,11 +18,23 @@ router.get('/:object/:limit', function(req, res) {
 });
 
 router.get('/:object/single/:id', function(req, res) {
-    var id = req.params.id;
+    var id = req.params.id, params;
+
     var success = function(data) {
         res.json(200, data);
     };
-    db.get.single(req.params.object, id, success);
+
+    if (id == "today") {
+        params = {
+            where : { date: today }
+        }
+    } else {
+        params = {
+            where : { objectId: id }
+        }
+    }
+
+    db.get.single(req.params.object, params, success);
 });
 
 router.get('/:object/counter/:date/:change', function(req, res) {
