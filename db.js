@@ -33,8 +33,8 @@ get.singleOrNew = function(object_name, params, success, create_new) {
     // If no object create one
     function responseSuccess(object_name, data, success, create_new) {
         if (create_new) {
-            if (data.code != undefined && data.code == 101) {
-                save.insert(object_name, null, function(data){success(data);});
+            if ((data == undefined) || (data.code == undefined) || (data.code != undefined && data.code == 101)) {
+                save.insert(object_name, data, function(data){success(data);});
             } else {
                 success(data);
             }
@@ -45,7 +45,15 @@ get.singleOrNew = function(object_name, params, success, create_new) {
 
     if (params instanceof Object) {
         db.getObjects(object_name, params, function(err, res, body, suc){
-            responseSuccess(object_name, body[0], success, create_new);
+            if (body[0] == undefined && params != undefined && params.where != undefined) {
+                body = {
+                    date: params.where.date
+                };
+            } else {
+                body = body[0];
+            }
+
+            responseSuccess(object_name, body, success, create_new);
         });
     } else {
         db.getObject(object_name, id, null, function(err, res, body, suc){
