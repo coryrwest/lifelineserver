@@ -1,4 +1,8 @@
 function normalizeData(data, dates) {
+    if (data[0] == undefined) {
+        return;
+    }
+
     var drilldownData = data[0].id != undefined;
 
     var normalized = dates.map(function(n) {
