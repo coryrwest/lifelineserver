@@ -37,32 +37,6 @@ router.get('/:object/single/:id', function(req, res) {
     db.get.single(req.params.object, params, success);
 });
 
-router.get('/:object/counter/:date/:change', function(req, res) {
-    var change = req.params.change;
-    var object = req.params.object;
-    var getSuccess = function(data) {
-        // now that we have the object, update it
-        data = updateValue(data, change);
-        // save the object
-        var createSuccess = function(data) {
-            res.json(200, data);
-        };
-        db.save.update(object, data, createSuccess);
-    };
-
-    // get the object to update
-    var date = req.params.date;
-    var params = {
-        where: { date: date }
-    };
-    // If date is today, null params
-    if (date == "today") {
-        params = null;
-    }
-    // Get existing first
-    db.get.singleOrNew(req.params.object, params, getSuccess);
-});
-
 router.get('/:object/date/:date', function(req, res) {
     var date = req.params.date;
     var params = {
@@ -84,6 +58,32 @@ router.put('/:object', function(req, res) {
     var data = req.body;
 
     db.save.update(req.params.object, data, success);
+});
+
+router.post('/:object/counter', function(req, res) {
+    var change = req.body.change;
+    var object = req.params.object;
+    var getSuccess = function(data) {
+        // now that we have the object, update it
+        data = updateValue(data, change);
+        // save the object
+        var createSuccess = function(data) {
+            res.json(200, data);
+        };
+        db.save.update(object, data, createSuccess);
+    };
+
+    // get the object to update
+    var date = req.body.date;
+    var params = {
+        where: { date: date }
+    };
+    // If date is today, null params
+    if (date == "today" || date == undefined || date == null) {
+        params = null;
+    }
+    // Get existing first
+    db.get.singleOrNew(req.params.object, params, getSuccess);
 });
 
 router.post('/:object', function(req, res) {
@@ -108,10 +108,25 @@ function updateValue(data, change) {
     // check existence and convert to int
     data.value = +data.value || 0;
 
-    if (change == "+") {
-        data.value = data.value + 1;
-    } else if (data.value != 0 && change == "-") {
-        data.value = data.value - 1;
+    if (change.indexOf("+") != -1) {
+        var num = change.substr(1, change.length);
+        if (num.length > 0) {
+            data.value = data.value + +num;
+        } else {
+            data.value = data.value + 1;
+        }
+    } else if (data.value != 0 && change.indexOf("-")) {
+        var num = change.substr(1, change.length);
+        if (num.length > 0) {
+            var final = data.value - +num;
+            if (final < 0) {
+                data.value = 0;
+            } else {
+                data.value = final;
+            }
+        } else {
+            data.value = data.value - 1;
+        }
     }
 
     // Convert to string
