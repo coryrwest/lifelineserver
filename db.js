@@ -45,7 +45,7 @@ get.singleOrNew = function(object_name, params, success, create_new) {
 
     if (params instanceof Object) {
         db.getObjects(object_name, params, function(err, res, body, suc){
-            if (body[0] == undefined && params != undefined && params.where != undefined) {
+            if (body[0] == undefined && params != undefined && params.where != undefined && create_new) {
                 body = {
                     date: params.where.date
                 };
