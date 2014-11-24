@@ -10,6 +10,7 @@
     <script src="./js/jquery-2.1.1.min.js"></script>
     <script src="./js/bootstrap.js"></script>
     <script src="./js/moment.js"></script>
+    <script src="./js/bootstrapper.js"></script>
     <script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
     <script src="./js/highcharts.js"></script>
     <script src="./js/drilldown.js"></script>
@@ -32,7 +33,9 @@
         var dateRange = getDateRange(numberDays);
 
         app.controller('ChartCtrl', ['$scope', 'dataService', function ($scope, dataService) {
-            dataService.getList({object: 'pick', limit: numberDays}, function(obj) {
+            $scope.showManual = false;
+
+            dataService.getList({object: 'pick', start: start, end: end}, function(obj) {
                 var pick = formatDataForGraph(obj, dateRange);
                         $(function () {
                             $('#pick').highcharts({
@@ -61,8 +64,8 @@
                         });
             });
 
-            dataService.getList({object: 'water', limit: numberDays}, function(water) {
-                dataService.getList({object: 'sore', limit: numberDays}, function(sore) {
+            dataService.getList({object: 'water', start: start, end: end}, function(water) {
+                dataService.getList({object: 'sore', start: start, end: end}, function(sore) {
                     var data = formatDataForGraph(water, dateRange);
                     var sore = formatDataForGraph(sore, dateRange);
                     var minLine = generateMinLine(dateRange, 4);
@@ -102,8 +105,8 @@
                 });
             });
 
-            dataService.getList({object: 'weather_data', limit: numberDays * 24}, function(obj) {
-                dataService.getList({object: 'energy_usage', limit: numberDays * 24}, function(energy) {
+            dataService.getList({object: 'weather_data', start: start, end: end}, function(obj) {
+                dataService.getList({object: 'energy_usage', start: start, end: end}, function(energy) {
                     var weatherData = formatWeatherDataForGraph(obj, dateRange);
                     var energyData = formatEnergyDataForGraph(energy, dateRange);
                     var drilldown = formatWeatherDataForDrilldown(obj, dateRange);
@@ -139,7 +142,7 @@
         }]);
 
         app.factory('dataService', ['$q', '$resource', function ($q, $resource) {
-            return $resource('data/:object/:limit', { object: '@object', limit: '@limit' }, {
+            return $resource('data/:object/range/:start/:end', { object: '@object', start: '@start', end: '@end' }, {
                 getList: { method: 'GET', isArray: true }
             });
         }]);
@@ -165,31 +168,44 @@
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="ChartCtrl">
     <div class="row">
-        <!--<div class="col-sm-3 col-md-2 sidebar">-->
+        <div class="col-md-2 sidebar hidden-sm hidden-xs">
+            <ul class="nav nav-sidebar">
+                <li class="active"><a href="#">Dashboard</a></li>
+                <li>
+                    <a href="#" ng-click="showManual = !showManual">Add Point</a>
+                </li>
+            </ul>
             <!--<ul class="nav nav-sidebar">-->
-                <!--<li class="active"><a href="#">Overview</a></li>-->
-                <!--<li><a href="#">Reports</a></li>-->
-                <!--<li><a href="#">Analytics</a></li>-->
-                <!--<li><a href="#">Export</a></li>-->
+                <!--<li><a href="">Nav item</a></li>-->
+                <!--<li><a href="">Nav item again</a></li>-->
+                <!--<li><a href="">One more nav</a></li>-->
+                <!--<li><a href="">Another nav item</a></li>-->
+                <!--<li><a href="">More navigation</a></li>-->
             <!--</ul>-->
-            <!--&lt;!&ndash;<ul class="nav nav-sidebar">&ndash;&gt;-->
-                <!--&lt;!&ndash;<li><a href="">Nav item</a></li>&ndash;&gt;-->
-                <!--&lt;!&ndash;<li><a href="">Nav item again</a></li>&ndash;&gt;-->
-                <!--&lt;!&ndash;<li><a href="">One more nav</a></li>&ndash;&gt;-->
-                <!--&lt;!&ndash;<li><a href="">Another nav item</a></li>&ndash;&gt;-->
-                <!--&lt;!&ndash;<li><a href="">More navigation</a></li>&ndash;&gt;-->
-            <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-        <!--</div>-->
-        <div class="col-sm-12 main">
+        </div>
+        <div class="col-sm-12 col-md-10 col-md-offset-2 main">
             <h1 class="page-header">Dashboard</h1>
 
-            <div class="row placeholders" ng-controller="ChartCtrl">
-                <div class="col-xs-12 placeholder">
-                    <div id="water" class="chart-container"></div>
-                    <div id="weather" class="chart-container"></div>
-                    <div id="pick" class="chart-container"></div>
+            <div class="row placeholders">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-xs-12">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12" ng-show="showManual">
+                            FORM GOES HERE
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 placeholder">
+                            <div id="water" class="chart-container"></div>
+                            <div id="weather" class="chart-container"></div>
+                            <div id="pick" class="chart-container"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

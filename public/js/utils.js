@@ -1,5 +1,3 @@
-var numberDays = 14;
-
 function formatDataForGraph(obj, dateRange) {
     var values = [];
 
@@ -10,7 +8,7 @@ function formatDataForGraph(obj, dateRange) {
         if (obj[i].date != undefined) {
             var date = obj[i].date;
             if(date >= moment().subtract(numberDays, 'days')) {
-                date = date.format("M-D");
+                date = date.format(smallFormat);
                 values.push({y: +obj[i].value, name: date});
             }
         }

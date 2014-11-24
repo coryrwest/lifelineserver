@@ -22,7 +22,7 @@ function formatDate(date, returnMoment, asTime) {
     if (isCreatedDate) {
         date = moment(date, moment.ISO_8601).subtract(7, 'h');
     } else {
-        date =  moment(date, "MM-DD-YYYY HH:mma");
+        date =  moment(date, longFormat);
     }
 
     // Return the moment and do no other processing
@@ -37,9 +37,9 @@ function formatDate(date, returnMoment, asTime) {
         } else if (!asTime && isCreatedDate) {
             // Only return formatted if this is
             // a parse created date
-            return date.format('M-D');
+            return date.format(smallFormat);
         } else {
-            return date.format('MM-DD-YYYY');
+            return date.format(medFormat);
         }
     }
 }
@@ -47,7 +47,7 @@ function formatDate(date, returnMoment, asTime) {
 function getDateRange(range) {
     var dates = [];
     for(var i = 0; i < range; i++) {
-        dates.push(moment().subtract(i, 'days').format("M-D"))
+        dates.push(moment().subtract(i, 'days').format(smallFormat))
     }
     return dates.sortBy();
 }
