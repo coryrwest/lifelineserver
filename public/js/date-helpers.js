@@ -1,4 +1,4 @@
-function formatDataSetDates(data, key) {
+function formatDataSetDates(data, key, asMoment) {
     // createdAt will always have data,
     // so no need for null check
     if (key == 'createdAt') {
@@ -8,7 +8,7 @@ function formatDataSetDates(data, key) {
     } else {
         for(var i = 0; i <= data.length - 1; i++) {
             if (data[i][key] != undefined) {
-                data[i].date = formatDate(data[i][key], true, false);
+                data[i].date = formatDate(data[i][key], asMoment, false);
             }
         }
     }

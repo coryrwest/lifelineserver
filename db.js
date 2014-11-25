@@ -19,12 +19,12 @@ get.single = function(object_name, params, success) {
 };
 get.singleOrNew = function(object_name, params, success, create_new) {
     // default create_new
-    if (create_new == undefined) {
+    if (create_new === undefined) {
         create_new = true;
     }
 
     // if params is null get the item for today
-    if(params == null) {
+    if(params === null) {
         params = {
             where: {date: today}
         };
@@ -46,15 +46,15 @@ get.singleOrNew = function(object_name, params, success, create_new) {
 
     // If no object create one
     responseSuccess = function(object_name, data, success, create_new) {
-        if ((data == undefined || data == null) ||
-            (create_new && data != undefined && data.code != undefined && data.code == 101)) {
+        if ((data === undefined || data === null) ||
+            (create_new && data !== undefined && data.code !== undefined && data.code === 101)) {
             save.insert(object_name, null, function (data) {
                 success(data);
             });
         } else {
             success(data);
         }
-    }
+    };
 };
 
 // ------------
