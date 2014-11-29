@@ -68,7 +68,7 @@
                 dataService.getList({object: 'sore', start: start, end: end}, function(sore) {
                     var data = formatDataForGraph(water, dateRange);
                     var sore = formatDataForGraph(sore, dateRange);
-                    var minLine = generateMinLine(dateRange, 4);
+                    var minLine = generateMinLine(dateRange, 64);
 
                     $(function () {
                         $('#water').highcharts({
