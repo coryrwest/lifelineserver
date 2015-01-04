@@ -1,131 +1,65 @@
 var express = require('express');
 var router = express.Router();
-var db = require('../db');
+var api = require('../api.js');
 var moment = require('moment-timezone');
-var today = moment().tz("America/Los_Angeles").format("MM-DD-YYYY");
 
-router.get('/:object/range/:start/:end', function(req, res) {
-    var start = req.params.start, end = req.params.end;
-    var success = function(data) {
+router.get('/:object', function(req, res) {
+    var start = req.query.start, end = req.query.end, date = req.query.date;
+
+    var suc = function(data) {
         res.json(200, data);
     };
 
-    // check params
-    if (start == "today") {
-        start = today;
-    }
-
-    var params = {
-        order: '-date',
-        limit: 300,
-        where: { date: { $gte:start, $lte:end } }
-    };
-
-    db.get.list(req.params.object, params, success);
-});
-
-router.get('/:object/single/:id', function(req, res) {
-    var id = req.params.id, params;
-    var object = req.params.object;
-
-    var success = function(data) {
-        res.json(200, data);
-    };
-
-    if (id == "today") {
-        params = {
-            where : { date: today }
-        };
-    } else if (moment(id).isValid()) {
-        params = {
-            where: { date: id }
-        };
-    } else {
-        params = id;
-    }
-
-    db.get.singleOrNew(object, params, success, true);
+    api.getRange(req.params.object, start, end, date, suc);
 });
 
 router.put('/:object', function(req, res) {
+    var date = req.body.date, change = req.body.change;
+
     var success = function(data) {
-        res.json(200, data);
-    };
-    var data = req.body;
-
-    db.save.update(req.params.object, data, success);
-});
-
-router.post('/:object/counter', function(req, res) {
-    var change = req.body.change;
-    var object = req.params.object;
-    var date = req.body.date;
-
-    var getSuccess = function(data) {
-        // now that we have the object, update it
-        data = updateValue(data, change);
-        var createSuccess = function(data) {
+        if (data.ok) {
             res.json(200, data);
-        };
-        // save the object
-        db.save.update(object, data, createSuccess);
+        } else {
+            res.json(500, "There was an error updating. " + Json.stringify(data));
+        }
     };
 
-    // If date is today, no params
-    if (date != undefined && date != null) {
-        var params = {
-            where: { date: date }
-        };
-    }
-    // Get existing first
-    db.get.singleOrNew(req.params.object, params, getSuccess);
+    api.update(req.params.object, date, {date: date, change: change}, req.body, success);
 });
 
 router.post('/:object', function(req, res) {
-    var createSuccess = function(data) {
-        res.json(200, data);
-    };
     var data = req.body;
-    db.save.insert(req.params.object, data, createSuccess);
+
+    var success = function(data) {
+        if (data.ok) {
+            res.json(200, data);
+        } else {
+            res.json(500, "There was an error inserting. " + Json.stringify(data));
+        }
+    };
+
+    api.insert(req.params.object, data, success);
 });
 
 router.post('/:object/collection', function(req, res) {
-    var createSuccess = function(data) {
-        res.json(200, data);
+    var success = function(data) {
+        var status = {allOk: true};
+        for(var i = 0; i < data.length; i++) {
+            if (!data[i].ok) {
+                status.allOk = false;
+                break;
+            }
+        }
+
+        if(status.allOk) {
+            res.json(200, data);
+        } else {
+            res.json(500, "There was an error inserting. " + Json.stringify(data));
+        }
     };
+
     var data = req.body;
-    db.save.insertCollection(req.params.object, data, createSuccess);
+    api.insertCollection(req.params.object, data, success);
 });
 
 module.exports = router;
-
-function updateValue(data, change) {
-    // check existence and convert to int
-    data.value = +data.value || 0;
-
-    if (change.indexOf("+") != -1) {
-        var num = change.substr(1, change.length);
-        if (num.length > 0) {
-            data.value = data.value + +num;
-        } else {
-            data.value = data.value + 1;
-        }
-    } else if (data.value != 0 && change.indexOf("-") != -1) {
-        var num = change.substr(1, change.length);
-        if (num.length > 0) {
-            var final = data.value - +num;
-            if (final < 0) {
-                data.value = 0;
-            } else {
-                data.value = final;
-            }
-        } else {
-            data.value = data.value - 1;
-        }
-    }
-
-    // Convert to string
-    data.value = data.value.toString();
-
-    return data;
-}

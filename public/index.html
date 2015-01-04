@@ -35,34 +35,34 @@
         app.controller('ChartCtrl', ['$scope', 'dataService', function ($scope, dataService) {
             $scope.showManual = false;
 
-            dataService.getList({object: 'pick', start: start, end: end}, function(obj) {
-                var pick = formatDataForGraph(obj, dateRange);
-                        $(function () {
-                            $('#pick').highcharts({
-                                chart: {
-                                    type: 'line'
-                                },
-                                title: {
-                                    text: ''
-                                },
-                                xAxis: {
-                                    categories: dateRange
-                                },
-                                yAxis: {
-                                    title: {
-                                        text: 'Frequency'
-                                    }
-                                },
-                                series: [
-                                    {
-                                        type: 'column',
-                                        name: 'Face picks',
-                                        data: pick
-                                    }
-                                ]
-                            });
-                        });
-            });
+//            dataService.getList({object: 'pick', start: start, end: end}, function(obj) {
+//                var pick = formatDataForGraph(obj, dateRange);
+//                        $(function () {
+//                            $('#pick').highcharts({
+//                                chart: {
+//                                    type: 'line'
+//                                },
+//                                title: {
+//                                    text: ''
+//                                },
+//                                xAxis: {
+//                                    categories: dateRange
+//                                },
+//                                yAxis: {
+//                                    title: {
+//                                        text: 'Frequency'
+//                                    }
+//                                },
+//                                series: [
+//                                    {
+//                                        type: 'column',
+//                                        name: 'Face picks',
+//                                        data: pick
+//                                    }
+//                                ]
+//                            });
+//                        });
+//            });
 
             dataService.getList({object: 'water', start: start, end: end}, function(water) {
                 dataService.getList({object: 'sore', start: start, end: end}, function(sore) {
@@ -78,26 +78,34 @@
                             xAxis: {
                                 categories: dateRange
                             },
-                            yAxis: {
+                            yAxis: [{
                                 title: {
-                                    text: 'Total Number'
+                                    text: 'Ounces'
                                 }
-                            },
+                            }, {
+                                title: {
+                                    text: 'Count'
+                                },
+                                opposite: true
+                            }],
                             series: [
                                 {
-                                    type: 'line',
-                                    name: 'Total Water Intake',
-                                    data: data
+                                    yAxis: 1,
+                                    type: 'column',
+                                    name: 'Sore',
+                                    data: sore
                                 },
                                 {
+                                    yAxis: 0,
                                     type: 'line',
                                     name: 'Minimum Water Intake',
                                     data: minLine
                                 },
                                 {
-                                    type: 'column',
-                                    name: 'Sore',
-                                    data: sore
+                                    yAxis: 0,
+                                    type: 'line',
+                                    name: 'Total Water Intake',
+                                    data: data
                                 }
                             ]
                         });
@@ -118,18 +126,25 @@
                                 xAxis: {
                                     categories: dateRange
                                 },
-                                yAxis: {
+                                yAxis: [{
                                     title: {
                                         text: 'Temp'
                                     }
-                                },
+                                }, {
+                                    title: {
+                                        text: 'kWh'
+                                    },
+                                    opposite: true
+                                }],
                                 series: [{
+                                    yAxis: 0,
                                     type: 'line',
-                                    name: 'temp',
+                                    name: 'Max Tempuratue',
                                     data: weatherData
                                 }, {
+                                    yAxis: 1,
                                     type: 'column',
-                                    name: 'energy',
+                                    name: 'Energy Usage',
                                     data: energyData
                                 }],
                                 drilldown: {
@@ -203,7 +218,6 @@
                         <div class="col-xs-12 placeholder">
                             <div id="water" class="chart-container"></div>
                             <div id="weather" class="chart-container"></div>
-                            <div id="pick" class="chart-container"></div>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 var weather = require('./dataModules/weatherUnderground.js');
-var db = require('./db');
+var api = require('./api.js');
 var cron = require('cron').CronJob;
 
 var jobs = {};
@@ -27,7 +27,7 @@ var getWeatherData = function() {
             'UV' : data['UV']
         };
 
-        db.save.insert("weather_data", filteredData, function() {console.log('Got weather data.');});
+        api.insert("weather_data", filteredData, function() {console.log('Got weather data.');});
     }
 
     // Get the data from Weather Underground
