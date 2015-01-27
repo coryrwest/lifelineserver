@@ -100,7 +100,7 @@ dal.insertCollection = function(object_name, objects, success) {
 dal.update = function(object_name, object, success) {
     var url = root + getDBName(object_name);
 
-    authenticate(function() {
+        authenticate(function() {
         request({
             method: 'PUT',
             uri: url + '/' + object._id,
@@ -139,7 +139,6 @@ dal.remove = function(object_name, id, rev, success) {
     );
 };
 
-
 var convertDate = function(date) {
     return new Date(date).toISOString().splice(1, 10);
 };
@@ -148,17 +147,15 @@ var getDBName = function(object) {
         case "water":
         case "pick":
         case "sore":
-            return "counter_data";
         case "sick":
-            return "onceaday_data";
-        case "left_house":
-        case "daily_notes":
-            return "note_data";
+            return "counter_data";
         case "weather_data":
             return "weather_data";
         case "bank_data":
             return "bank_data";
+        case "energy_data":
+            return "energy_data";
         default:
-            return "custom_data";
+            return "note_data";
     }
 };

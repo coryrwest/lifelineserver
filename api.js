@@ -89,9 +89,13 @@ api.update = function(object_name, id, object, body, suc) {
                 // Set date time and comparator
                 data[0] = helpers.setDefaults(data[0], object_name);
                 var updated = api.updateValue(data[0], object.change);
+                // Handle special object cases
+                updated = handleSpecialCases(updated);
                 couch.insert(object_name, updated, suc);
             } else {
                 var updated = api.updateValue(data[0], object.change);
+                // Handle special object cases
+                updated = handleSpecialCases(updated);
                 couch.update(object_name, updated, suc);
             }
         }
@@ -148,5 +152,14 @@ api.updateValue = function(object, change) {
         delete object.change;
     }
 
+    return object;
+};
+
+var handleSpecialCases = function(object) {
+    if (object.type && object.value) {
+        if (object.type = 'sick') {
+            object.value = '1';
+        }
+    }
     return object;
 };
