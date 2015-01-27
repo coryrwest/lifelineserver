@@ -5,7 +5,7 @@ var request = require('request');
 //var j = request.jar();
 request.defaults({jar: true});
 request.debug = true;
-var root = 'https://lifeline1.iriscouch.com:6984/';
+var root = process.env.ROOT || 'https://lifeline1.iriscouch.com:6984/';
 
 var dal = module.exports = {};
 
