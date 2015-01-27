@@ -156,7 +156,7 @@ api.updateValue = function(object, change) {
 };
 
 var handleSpecialCases = function(object) {
-    if (object.type && object.value) {
+    if (object && object.type && object.value) {
         if (object.type = 'sick') {
             object.value = '1';
         }
