@@ -1,9 +1,9 @@
 // https://github.com/shiki/kaiseki
 var moment = require('moment-timezone');
 // couchdb
-var request = require('request');
+var request = require('request').defaults({jar: true});
 //var j = request.jar();
-request.defaults({jar: true});
+//request.defaults({jar: true});
 request.debug = true;
 var root = process.env.ROOT || 'https://lifeline1.iriscouch.com:6984/';
 
@@ -37,22 +37,24 @@ dal.get = function(object_name, params, success) {
         url += "?key=[\"" + params.date + "\",\"" + object_name + "\"]";
     }
 
-    authenticate(request.get(url, function(err, res, body) {
-            if(err) {
-                throw err;
-            }
+    authenticate(function() {
+            request.get({url: url}, function(err, res, body) {
+                if(err) {
+                    throw err;
+                }
 
-            var result = [], json = JSON.parse(body);
-            for(var i = 0; i <= json.rows.length - 1; i++) {
-                result.push(json.rows[i].value);
-            }
+                var result = [], json = JSON.parse(body);
+                for(var i = 0; i <= json.rows.length - 1; i++) {
+                    result.push(json.rows[i].value);
+                }
 
-            if (result.length == 0) {
-                result = null;
-            }
+                if (result.length == 0) {
+                    result = null;
+                }
 
-            success(result);
-        })
+                success(result);
+            });
+        }
     );
 };
 
