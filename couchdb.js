@@ -1,7 +1,9 @@
 // https://github.com/shiki/kaiseki
 var moment = require('moment-timezone');
 // couchdb
-var request = require('request').defaults({jar: true});
+var request = require('request');
+//var j = request.jar();
+request.defaults({jar: true});
 request.debug = true;
 var root = 'https://lifeline1.iriscouch.com:6984/';
 
@@ -21,31 +23,37 @@ function authenticate(authed) {
 // --- GET ---
 // -----------
 dal.get = function(object_name, params, success) {
-    var url = root + getDBName(object_name) + "/_design/base/_view/byID";
+    var url = root + getDBName(object_name);
 
     // Handle params
+    if(params.view) {
+        url = url + "/_design/" + params.view;
+    } else {
+        url = url + "/_design/base/_view/byID";
+    }
     if(params.start) {
         url += "?startkey=[\"" + params.start + "\",\"" + object_name + "\"]";
     } else if(params.date) {
         url += "?key=[\"" + params.date + "\",\"" + object_name + "\"]";
     }
 
-    request.get(url, function(err, res, body) {
-        if(err) {
-            throw err;
-        }
+    authenticate(request.get(url, function(err, res, body) {
+            if(err) {
+                throw err;
+            }
 
-        var result = [], json = JSON.parse(body);
-        for(var i = 0; i <= json.rows.length - 1; i++) {
-            result.push(json.rows[i].value);
-        }
+            var result = [], json = JSON.parse(body);
+            for(var i = 0; i <= json.rows.length - 1; i++) {
+                result.push(json.rows[i].value);
+            }
 
-        if (result.length == 0) {
-            result = null;
-        }
+            if (result.length == 0) {
+                result = null;
+            }
 
-        success(result);
-    });
+            success(result);
+        })
+    );
 };
 
 // ------------
@@ -54,38 +62,40 @@ dal.get = function(object_name, params, success) {
 dal.insert = function(object_name, object, success) {
     var url = root + getDBName(object_name);
 
-    request.post({
-        url: url,
-        body: object,
-        json: true
-    }, function(err, res, body) {
-        if(err) {
-            throw err;
-        }
+    authenticate(request.post({
+            url: url,
+            body: object,
+            json: true
+        }, function(err, res, body) {
+            if(err) {
+                throw err;
+            }
 
-//        var result = [], json = JSON.parse(body);
-//        for(var i = 0; i <= json.rows.length - 1; i++) {
-//            result.push(json.rows[i].value);
-//        }
-        success(body);
-    });
+    //        var result = [], json = JSON.parse(body);
+    //        for(var i = 0; i <= json.rows.length - 1; i++) {
+    //            result.push(json.rows[i].value);
+    //        }
+            success(body);
+        })
+    );
 };
 dal.insertCollection = function(object_name, objects, success) {
     var url = root + getDBName(object_name) + "/_bulk_docs";
 
     var postData = { "docs" : objects };
 
-    request.post({
-        url: url,
-        body: postData,
-        json: true
-    }, function(err, res, body) {
-        if(err) {
-            throw err;
-        }
+    authenticate(request.post({
+            url: url,
+            body: postData,
+            json: true
+        }, function(err, res, body) {
+            if(err) {
+                throw err;
+            }
 
-        success(body);
-    });
+            success(body);
+        })
+    );
 };
 dal.update = function(object_name, object, success) {
     var url = root + getDBName(object_name);
@@ -118,14 +128,15 @@ dal.updateCollection = function(object_name, objects, success) {
 dal.remove = function(object_name, id, rev, success) {
     var url = root + getDBName(object_name) + "/" + id + "?rev=" + rev;
 
-    request.del(url, function(err, res, body) {
-        if(err) {
-            throw err;
-        }
+    authenticate(request.del(url, function(err, res, body) {
+            if(err) {
+                throw err;
+            }
 
-        var json = JSON.parse(body);
-        success(json.ok);
-    });
+            var json = JSON.parse(body);
+            success(json.ok);
+        })
+    );
 };
 
 
@@ -145,6 +156,8 @@ var getDBName = function(object) {
             return "note_data";
         case "weather_data":
             return "weather_data";
+        case "bank_data":
+            return "bank_data";
         default:
             return "custom_data";
     }

@@ -7,7 +7,7 @@ var couch = require('./couchdb');
 var helpers = require('./db.js');
 var api = module.exports = {};
 
-api.getRange = function(object_name, start, end, date, suc) {
+api.getRange = function(object_name, start, end, date, view, suc) {
     var params = {};
 
     if(start) {
@@ -22,6 +22,9 @@ api.getRange = function(object_name, start, end, date, suc) {
     if (date) {
         params = {};
         params.date = date;
+    }
+    if (view) {
+        params.view = view;
     }
 
     couch.get(object_name, params, suc);

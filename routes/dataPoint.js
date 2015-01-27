@@ -4,13 +4,13 @@ var api = require('../api.js');
 var moment = require('moment-timezone');
 
 router.get('/:object', function(req, res) {
-    var start = req.query.start, end = req.query.end, date = req.query.date;
+    var start = req.query.start, end = req.query.end, date = req.query.date, view = req.query.view;
 
     var suc = function(data) {
         res.json(200, data);
     };
 
-    api.getRange(req.params.object, start, end, date, suc);
+    api.getRange(req.params.object, start, end, date, view, suc);
 });
 
 router.put('/:object', function(req, res) {
