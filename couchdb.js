@@ -32,9 +32,9 @@ dal.get = function(object_name, params, success) {
         url = url + "/_design/base/_view/byID";
     }
     if(params.start) {
-        url += "?startkey=[\"" + params.start + "\",\"" + object_name + "\"]";
+        url += "?startkey=[\"" + object_name + "\",\"" + params.start + "\"]";
     } else if(params.date) {
-        url += "?key=[\"" + params.date + "\",\"" + object_name + "\"]";
+        url += "?key=[\"" + object_name + "\",\"" + params.date + "\"]";
     }
 
     authenticate(function() {

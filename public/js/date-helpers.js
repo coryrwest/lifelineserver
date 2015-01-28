@@ -18,12 +18,11 @@ function formatDataSetDates(data, key, asMoment) {
 function formatDate(date, returnMoment, asTime) {
     if (date) {
         var isCreatedDate = moment(date, moment.ISO_8601).isValid();
-        var date;
         // Parse the date to a moment
-        if (isCreatedDate) {
-            date = moment(date, moment.ISO_8601).subtract(7, 'h');
-        } else {
+        if (!isCreatedDate) {
             date = moment(date, longFormat);
+        } else {
+            date = moment(date);
         }
 
         // Return the moment and do no other processing
