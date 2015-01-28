@@ -16,31 +16,36 @@ function formatDataSetDates(data, key, asMoment) {
 }
 
 function formatDate(date, returnMoment, asTime) {
-    var isCreatedDate = moment(date, moment.ISO_8601).isValid();
-    var date;
-    // Parse the date to a moment
-    if (isCreatedDate) {
-        date = moment(date, moment.ISO_8601).subtract(7, 'h');
-    } else {
-        date =  moment(date, longFormat);
-    }
-
-    // Return the moment and do no other processing
-    if (returnMoment) {
-        return date;
-    } else {
-        // Format the date
-        if (asTime) {
-            // Return as time if true no matter
-            // what type of date this is
-            return date.format('HH:mm');
-        } else if (!asTime && isCreatedDate) {
-            // Only return formatted if this is
-            // a parse created date
-            return date.format(smallFormat);
+    if (date) {
+        var isCreatedDate = moment(date, moment.ISO_8601).isValid();
+        var date;
+        // Parse the date to a moment
+        if (isCreatedDate) {
+            date = moment(date, moment.ISO_8601).subtract(7, 'h');
         } else {
-            return date.format(medFormat);
+            date = moment(date, longFormat);
         }
+
+        // Return the moment and do no other processing
+        if (returnMoment) {
+            return date;
+        } else {
+            // Format the date
+            if (asTime) {
+                // Return as time if true no matter
+                // what type of date this is
+                return date.format('HH:mm');
+            } else if (!asTime && isCreatedDate) {
+                // Only return formatted if this is
+                // a parse created date
+                return date.format(smallFormat);
+            } else {
+                return date.format(medFormat);
+            }
+        }
+    }
+    else {
+        return moment().format(medFormat);
     }
 }
 

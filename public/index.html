@@ -14,8 +14,8 @@
     <script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
     <script src="./js/highcharts.js"></script>
     <script src="./js/drilldown.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular-resource.min.js"></script>
+    <script src="http://fb.me/react-with-addons-0.12.2.min.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
     <script src="http://sugarjs.com/release/current/sugar.min.js"></script>
     <script src="http://momentjs.com/downloads/moment-timezone-with-data-2010-2020.js"></script>
     <script src="./js/date-helpers.js"></script>
@@ -27,143 +27,215 @@
             height:20em;
         }
     </style>
-    <script>
-        var app = angular.module('charting', ['ngResource']);
-
+    <script type="text/jsx">
         var dateRange = getDateRange(numberDays);
 
-        app.controller('ChartCtrl', ['$scope', 'dataService', function ($scope, dataService) {
-            $scope.showManual = false;
+        var Graph = React.createClass({
+            loadData: function() {
+                $.ajax({
+                    url: this.props.url + "=" + start,
+                    dataType: 'json',
+                    success: function(data) {
+                        data = formatDataForGraph(data, dateRange);
+                        this.setState({data: data});
+                    }.bind(this),
+                    error: function(xhr, status, err) {
+                        console.error(this.props.url, status, err.toString());
+                    }.bind(this)
+                });
+            },
+            renderChart: function(element, data) {
+                var minLine = generateMinLine(dateRange, 64);
 
-//            dataService.getList({object: 'pick', start: start, end: end}, function(obj) {
-//                var pick = formatDataForGraph(obj, dateRange);
-//                        $(function () {
-//                            $('#pick').highcharts({
-//                                chart: {
-//                                    type: 'line'
+                $(function () {
+                    $('#' + element).highcharts({
+                        title: {
+                            text: ''
+                        },
+                        xAxis: {
+                            categories: dateRange
+                        },
+                        yAxis: [{
+                            title: {
+                                text: 'Ounces'
+                            }
+                        }
+                        ],
+                        series: [
+                            {
+                                yAxis: 0,
+                                type: 'line',
+                                name: 'Minimum Water Intake',
+                                data: minLine
+                            },
+                            {
+                                yAxis: 0,
+                                type: 'line',
+                                name: 'Total Water Intake',
+                                data: data
+                            }
+                        ]
+                    });
+                });
+            },
+            getInitialState: function() {
+                return {data: []};
+            },
+            componentDidMount: function() {
+                this.loadData();
+            },
+            componentDidUpdate: function() {
+                this.renderChart(this.props.id, this.state.data);
+            },
+            render: function() {
+                return (
+                        <div id={this.props.id} className="chart-container">
+                            Hello, world! I am a {this.props.id} Graph.
+                        </div>
+                );
+            }
+        });
+
+        React.render(<Graph id="water" url="data/water?start"/>, document.getElementById('graphs'));
+
+    </script>
+    <script>
+//        var app = angular.module('charting', ['ngResource']);
+//
+//        var dateRange = getDateRange(numberDays);
+//
+//        app.controller('ChartCtrl', ['$scope', 'dataService', function ($scope, dataService) {
+//            $scope.showManual = false;
+//
+////            dataService.getList({object: 'pick', start: start, end: end}, function(obj) {
+////                var pick = formatDataForGraph(obj, dateRange);
+////                        $(function () {
+////                            $('#pick').highcharts({
+////                                chart: {
+////                                    type: 'line'
+////                                },
+////                                title: {
+////                                    text: ''
+////                                },
+////                                xAxis: {
+////                                    categories: dateRange
+////                                },
+////                                yAxis: {
+////                                    title: {
+////                                        text: 'Frequency'
+////                                    }
+////                                },
+////                                series: [
+////                                    {
+////                                        type: 'column',
+////                                        name: 'Face picks',
+////                                        data: pick
+////                                    }
+////                                ]
+////                            });
+////                        });
+////            });
+//
+//            dataService.getList({object: 'water', start: start, end: end}, function(water) {
+//                dataService.getList({object: 'sore', start: start, end: end}, function(sore) {
+//                    var data = formatDataForGraph(water, dateRange);
+//                    var sore = formatDataForGraph(sore, dateRange);
+//                    var minLine = generateMinLine(dateRange, 64);
+//
+//                    $(function () {
+//                        $('#water').highcharts({
+//                            title: {
+//                                text: ''
+//                            },
+//                            xAxis: {
+//                                categories: dateRange
+//                            },
+//                            yAxis: [{
+//                                title: {
+//                                    text: 'Ounces'
+//                                }
+//                            }, {
+//                                title: {
+//                                    text: 'Count'
 //                                },
+//                                opposite: true
+//                            }],
+//                            series: [
+//                                {
+//                                    yAxis: 1,
+//                                    type: 'column',
+//                                    name: 'Sore',
+//                                    data: sore
+//                                },
+//                                {
+//                                    yAxis: 0,
+//                                    type: 'line',
+//                                    name: 'Minimum Water Intake',
+//                                    data: minLine
+//                                },
+//                                {
+//                                    yAxis: 0,
+//                                    type: 'line',
+//                                    name: 'Total Water Intake',
+//                                    data: data
+//                                }
+//                            ]
+//                        });
+//                    });
+//                });
+//            });
+//
+//            dataService.getList({object: 'weather_data', start: start, end: end}, function(obj) {
+//                dataService.getList({object: 'energy_usage', start: start, end: end}, function(energy) {
+//                    var weatherData = formatWeatherDataForGraph(obj, dateRange);
+//                    var energyData = formatEnergyDataForGraph(energy, dateRange);
+//                    var drilldown = formatWeatherDataForDrilldown(obj, dateRange);
+//                        $(function () {
+//                            $('#weather').highcharts({
 //                                title: {
 //                                    text: ''
 //                                },
 //                                xAxis: {
 //                                    categories: dateRange
 //                                },
-//                                yAxis: {
+//                                yAxis: [{
 //                                    title: {
-//                                        text: 'Frequency'
+//                                        text: 'Temp'
 //                                    }
-//                                },
-//                                series: [
-//                                    {
-//                                        type: 'column',
-//                                        name: 'Face picks',
-//                                        data: pick
-//                                    }
-//                                ]
+//                                }, {
+//                                    title: {
+//                                        text: 'kWh'
+//                                    },
+//                                    opposite: true
+//                                }],
+//                                series: [{
+//                                    yAxis: 0,
+//                                    type: 'line',
+//                                    name: 'Max Tempuratue',
+//                                    data: weatherData
+//                                }, {
+//                                    yAxis: 1,
+//                                    type: 'column',
+//                                    name: 'Energy Usage',
+//                                    data: energyData
+//                                }],
+//                                drilldown: {
+//                                    series: drilldown
+//                                }
 //                            });
 //                        });
+//                });
 //            });
-
-            dataService.getList({object: 'water', start: start, end: end}, function(water) {
-                dataService.getList({object: 'sore', start: start, end: end}, function(sore) {
-                    var data = formatDataForGraph(water, dateRange);
-                    var sore = formatDataForGraph(sore, dateRange);
-                    var minLine = generateMinLine(dateRange, 64);
-
-                    $(function () {
-                        $('#water').highcharts({
-                            title: {
-                                text: ''
-                            },
-                            xAxis: {
-                                categories: dateRange
-                            },
-                            yAxis: [{
-                                title: {
-                                    text: 'Ounces'
-                                }
-                            }, {
-                                title: {
-                                    text: 'Count'
-                                },
-                                opposite: true
-                            }],
-                            series: [
-                                {
-                                    yAxis: 1,
-                                    type: 'column',
-                                    name: 'Sore',
-                                    data: sore
-                                },
-                                {
-                                    yAxis: 0,
-                                    type: 'line',
-                                    name: 'Minimum Water Intake',
-                                    data: minLine
-                                },
-                                {
-                                    yAxis: 0,
-                                    type: 'line',
-                                    name: 'Total Water Intake',
-                                    data: data
-                                }
-                            ]
-                        });
-                    });
-                });
-            });
-
-            dataService.getList({object: 'weather_data', start: start, end: end}, function(obj) {
-                dataService.getList({object: 'energy_usage', start: start, end: end}, function(energy) {
-                    var weatherData = formatWeatherDataForGraph(obj, dateRange);
-                    var energyData = formatEnergyDataForGraph(energy, dateRange);
-                    var drilldown = formatWeatherDataForDrilldown(obj, dateRange);
-                        $(function () {
-                            $('#weather').highcharts({
-                                title: {
-                                    text: ''
-                                },
-                                xAxis: {
-                                    categories: dateRange
-                                },
-                                yAxis: [{
-                                    title: {
-                                        text: 'Temp'
-                                    }
-                                }, {
-                                    title: {
-                                        text: 'kWh'
-                                    },
-                                    opposite: true
-                                }],
-                                series: [{
-                                    yAxis: 0,
-                                    type: 'line',
-                                    name: 'Max Tempuratue',
-                                    data: weatherData
-                                }, {
-                                    yAxis: 1,
-                                    type: 'column',
-                                    name: 'Energy Usage',
-                                    data: energyData
-                                }],
-                                drilldown: {
-                                    series: drilldown
-                                }
-                            });
-                        });
-                });
-            });
-        }]);
-
-        app.factory('dataService', ['$q', '$resource', function ($q, $resource) {
-            return $resource('data/:object/range/:start/:end', { object: '@object', start: '@start', end: '@end' }, {
-                getList: { method: 'GET', isArray: true }
-            });
-        }]);
+//        }]);
+//
+//        app.factory('dataService', ['$q', '$resource', function ($q, $resource) {
+//            return $resource('data/:object/range/:start/:end', { object: '@object', start: '@start', end: '@end' }, {
+//                getList: { method: 'GET', isArray: true }
+//            });
+//        }]);
     </script>
 </head>
-<body ng-app="charting">
+<body>
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -183,13 +255,13 @@
     </div>
 </div>
 
-<div class="container-fluid" ng-controller="ChartCtrl">
+<div class="container-fluid">
     <div class="row">
         <div class="col-md-2 sidebar hidden-sm hidden-xs">
             <ul class="nav nav-sidebar">
                 <li class="active"><a href="#">Dashboard</a></li>
                 <li>
-                    <a href="#" ng-click="showManual = !showManual">Add Point</a>
+                    <a href="#">Add Point</a>
                 </li>
             </ul>
             <!--<ul class="nav nav-sidebar">-->
@@ -210,14 +282,12 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12" ng-show="showManual">
+                        <div class="col-xs-12">
                             FORM GOES HERE
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 placeholder">
-                            <div id="water" class="chart-container"></div>
-                            <div id="weather" class="chart-container"></div>
+                        <div class="col-xs-12 placeholder" id="graphs">
                         </div>
                     </div>
                 </div>
