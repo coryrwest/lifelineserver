@@ -1,4 +1,4 @@
-var db = require('../couchdb.js');
+var db = require('../data_access/couchdb.js');
 var moment = require('moment-timezone');
 //var jasmine = require('jasmine-node');
 

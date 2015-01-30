@@ -1,4 +1,4 @@
-var db = require('../parse.js');
+var db = require('../data_access/parse.js');
 var moment = require('moment-timezone');
 //var jasmine = require('jasmine-node');
 

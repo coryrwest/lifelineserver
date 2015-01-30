@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var api = require('../api.js');
+var api = require('../data_access/api.js');
 var moment = require('moment-timezone');
 
 router.get('/:object', function(req, res) {

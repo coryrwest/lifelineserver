@@ -1,5 +1,5 @@
-var weather = require('./dataModules/weatherUnderground.js');
-var api = require('./api.js');
+var weather = require('./3rd_party_data/weatherUnderground.js');
+var api = require('./data_access/api.js');
 var cron = require('cron').CronJob;
 
 var jobs = {};
@@ -28,7 +28,7 @@ var getWeatherData = function() {
         };
 
         api.insert("weather_data", filteredData, function() {console.log('Got weather data.');});
-    }
+    };
 
     // Get the data from Weather Underground
     var wu = new weather('pws:KCAMURRI9');

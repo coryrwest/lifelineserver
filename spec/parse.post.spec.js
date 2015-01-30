@@ -1,4 +1,4 @@
-var db = require('../db.js');
+var db = require('../data_access/db.js');
 var moment = require('moment-timezone');
 
 describe('water_post_empty', function() {

@@ -23,7 +23,7 @@ function authenticate(authed) {
 // --- GET ---
 // -----------
 dal.get = function(object_name, params, success) {
-    var url = root + getDBName(object_name);
+    var type = getDBName(object_name), url = root + type;
 
     // Handle params
     if(params.view) {
@@ -31,10 +31,18 @@ dal.get = function(object_name, params, success) {
     } else {
         url = url + "/_design/base/_view/byID";
     }
-    if(params.start) {
-        url += "?startkey=[\"" + object_name + "\",\"" + params.start + "\"]";
-    } else if(params.date) {
-        url += "?key=[\"" + object_name + "\",\"" + params.date + "\"]";
+    if (type == 'counter_data') {
+        if(params.start) {
+            url += "?startkey=[\"" + object_name + "\",\"" + params.start + "\"]";
+        } else if(params.date) {
+            url += "?key=[\"" + object_name + "\",\"" + params.date + "\"]";
+        }
+    } else {
+        if(params.start) {
+            url += "?startkey=\"" + params.start + "\"";
+        } else if(params.date) {
+            url += "?key=\"" + params.date + "\"";
+        }
     }
 
     authenticate(function() {

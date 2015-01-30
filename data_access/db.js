@@ -17,8 +17,6 @@ helpers.setDefaults = function(object, object_name) {
     object.created = object.date + " " + object.time;
     // Set type
     object.type = object_name;
-    // Add date comparator to object
-    object.dateComparator = +object.dateComparator || +moment().format('X');
     return object;
 };
 
