@@ -5,7 +5,7 @@ var request = require('request').defaults({jar: true});
 //var j = request.jar();
 //request.defaults({jar: true});
 request.debug = true;
-var root = process.env.ROOT || 'https://lifeline1.iriscouch.com:6984/';
+var root = process.env.ROOT || 'http://ssh.corywestropp.com:5984/';
 
 var dal = module.exports = {};
 
@@ -27,7 +27,7 @@ dal.get = function(object_name, params, success) {
 
     // Handle params
     if(params.view) {
-        url = url + "/_design/" + params.view;
+        url = url + "/_design/base/_view/" + params.view;
     } else {
         url = url + "/_design/base/_view/byID";
     }
