@@ -47,11 +47,15 @@ dal.get = function(object_name, params, success) {
 
     authenticate(function() {
             request.get({url: url}, function(err, res, body) {
+                var result = [], json = JSON.parse(body);
+
                 if(err) {
                     throw err;
                 }
+                if (json.error) {
+                    throw json.error;
+                }
 
-                var result = [], json = JSON.parse(body);
                 for(var i = 0; i <= json.rows.length - 1; i++) {
                     result.push(json.rows[i].value);
                 }

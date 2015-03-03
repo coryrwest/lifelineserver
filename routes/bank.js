@@ -30,7 +30,7 @@ router.post('/transactions', function(req, res) {
         // from the new data set
         data = data.sortBy('date');
         var formattedDate = data[0].date;
-        api.getRange('bank_data', formattedDate, null, null, 'bankDataByDate/_view/all', function(existing) {
+        api.getRange('bank_data', formattedDate, null, null, 'all', function(existing) {
             // assign id numbers
             data = assignTransactionIds(data);
 
