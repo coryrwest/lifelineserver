@@ -80,7 +80,7 @@ var assignTransactionIds = function(transactions) {
     }
 
     for(var i = 0; i < transactions.length; i++) {
-        var key = transactions[i].description + transactions[i].amount + transactions[i].source;
+        var key = transactions[i].date + transactions[i].description + transactions[i].amount + transactions[i].source;
         transactions[i].transactionId = getHash(key);
     }
 
