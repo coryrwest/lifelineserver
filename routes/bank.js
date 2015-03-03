@@ -3,10 +3,21 @@ var router = express.Router();
 var api = require('../data_access/api.js');
 var moment = require('moment-timezone');
 var categoriesList = require('../categories.json');
+var request = require('request');
 var sugar = require('sugar');
 
 router.post('/transactions', function(req, res) {
     var success = function(data) {
+        // Email success
+        request.post({url: 'http://crw-smtpmailer.herokuapp.com/send', body: {
+            "token":"f7hf873n4889dgf879dh33kjnei8",
+            "to":"cmputrgk@gmail.com",
+            "subject":"Bank data upload success",
+            "message":"Bank data upload success"
+        }, json: true}, function(err) { if (err) {
+            return console.error('email failed:', err);
+        } });
+
         var status = {allOk: true};
         for(var i = 0; i < data.length; i++) {
             if (!data[i].ok) {
