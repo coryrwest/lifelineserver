@@ -19,7 +19,7 @@ router.post('/transactions', function(req, res) {
         if(status.allOk) {
             res.json(200, data);
         } else {
-            res.json(500, "There was an error inserting. " + Json.stringify(data));
+            res.json(500, "There was an error inserting. " + JSON.stringify(data));
         }
     };
 

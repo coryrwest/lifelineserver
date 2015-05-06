@@ -1,7 +1,7 @@
 {
   "name": "LifeLine",
   "description": "LifeLine - Life tracker",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "body-parser": "~1.4.3",
