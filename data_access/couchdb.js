@@ -13,7 +13,7 @@ function authenticate(authed) {
     request({
         method: 'POST',
         uri: root + '_session',
-        form: {name:'reader',password:process.env.DBPASSWORD}
+        form: {name:process.env.DBUSER,password:process.env.DBPASSWORD}
     }, function(err,httpResponse,body){
         authed();
     });
