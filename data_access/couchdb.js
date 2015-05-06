@@ -15,8 +15,12 @@ function authenticate(authed) {
         uri: root + '_session',
         form: {name:process.env.DBUSER,password:process.env.DBPASSWORD}
     }, function(err,httpResponse,body){
-        console.log('Authenticated');
-        authed();
+        if(err == null) {
+            console.log('Authenticated');
+            authed();
+        } else {
+            console.log(err);
+        }
     });
 }
 
