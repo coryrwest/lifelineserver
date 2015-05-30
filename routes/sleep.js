@@ -7,13 +7,13 @@ var request = require('request');
 var sugar = require('sugar');
 
 /**
- * @api {post} /bank/transactions Post transactions collection
- * @apiName PostTransactionsCollection
- * @apiGroup Bank
+ * @api {post} /sleep Post sleep data array
+ * @apiName PostSleepDataArray
+ * @apiGroup Sleep Data
  *
- * @apiParam {Object} objectBody JSON body of the transactions array to save.
+ * @apiParam {Object} objectBody JSON body of the sleep data array to save.
  */
-router.post('/transactions', function(req, res) {
+router.post('/', function(req, res) {
     var success = function(data) {
         var status = {allOk: true};
         for(var i = 0; i < data.length; i++) {

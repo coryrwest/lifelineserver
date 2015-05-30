@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var routes = require('./routes/index');
 var dataPoint = require('./routes/dataPoint');
 var bank = require('./routes/bank');
+var sleep = require('./routes/sleep');
 
 var app = module.exports = express();
 
@@ -30,8 +31,10 @@ app.use(bodyParser.json({ type: 'application/json' }));
 app.use('/', routes);
 app.use('/data', dataPoint);
 app.use('/bank', bank);
+app.use('/sleep', sleep);
 
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/doc'));
 
 // Jobs
 var jobs = require('./jobs');

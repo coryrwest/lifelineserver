@@ -27,5 +27,10 @@
   },
   "devDependencies": {
     "jasmine-node": "^1.14.5"
+  },
+  "apidoc": {
+    "title": "LifeLine",
+    "url" : "https://lifeline.corywestropp.com",
+    "version" : "0.1.0"
   }
 }
