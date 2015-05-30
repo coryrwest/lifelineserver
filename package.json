@@ -26,11 +26,12 @@
     "start": "node server.js"
   },
   "devDependencies": {
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "apidoc": "~0.13.1"
   },
   "apidoc": {
     "title": "LifeLine",
-    "url" : "https://lifeline.corywestropp.com",
-    "version" : "0.1.0"
+    "url": "https://lifeline.corywestropp.com",
+    "version": "0.1.0"
   }
 }
