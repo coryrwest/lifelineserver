@@ -26,6 +26,7 @@ app.response.message = function(msg){
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json({ type: 'application/json' }));
+app.use(bodyParser.text({ type: 'text/*' }));
 
 // routes
 app.use('/', routes);

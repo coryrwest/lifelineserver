@@ -5,6 +5,7 @@ var moment = require('moment-timezone');
 var categoriesList = require('../categories.json');
 var request = require('request');
 var sugar = require('sugar');
+var fastcsv = require('fast-csv');
 
 /**
  * @api {post} /sleep Post sleep data array
@@ -30,101 +31,23 @@ router.post('/', function(req, res) {
         }
     };
 
-    var data = req.body;
+    var csvFile = req.body;
 
-    // Process bank data
-    if (data instanceof Array) {
-        // Get existing items and filter out all duplicates
-        // from the new data set
-        data = data.sortBy('date');
-        var formattedDate = data[0].date;
-        api.getRange('bank_data', formattedDate, null, null, 'all', function(existing) {
-            // assign id numbers
-            data = assignTransactionIds(data);
-
-            // filter transactions
-            data = filterExistingItems(existing, data);
-
-            // Now that we have only new items, map the categories
-            data = mapCategories(data);
-
-            // Finally do the insert
-            api.insertCollection('bank_data', data, success);
-        });
-    } else {
-        res.json(500, "The data supplied was not an array.");
+    // Load the csv from the body
+    try {
+        fastcsv.fromString(csvFile, {headers:true})
+            .on('data', function(data) {
+                translateCsvRow(data);
+            })
+            .on('end', function() {
+                res.json(200, "Sleep data uploaded successfully.");
+            });
+    } catch (ex) {
+        res.json(500, 'An error occurred when saving sleep data. ' + ex);
     }
 });
 
 module.exports = router;
 
-var filterExistingItems = function(existing, newTrans) {
-    if (existing && existing != null) {
-        var filteredTrans = [];
-
-        // filter out existing records
-        for(var i = 0; i < newTrans.length; i++) {
-            if(!doesItemExist(newTrans[i].transactionId, existing.map('transactionId'))) {
-                filteredTrans.push(newTrans[i]);
-            }
-        }
-        // reassign new records
-        newTrans = filteredTrans;
-    }
-
-    return newTrans;
-};
-
-var assignTransactionIds = function(transactions) {
-    function getHash(string) {
-        var hash = 0, i, chr, len;
-        if (string.length == 0) return hash;
-        for (i = 0; i < string.length; i++) {
-            char = string.charCodeAt(i);
-            hash = ((hash<<5)-hash)+char;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-        return Math.abs(hash);
-    }
-
-    for(var i = 0; i < transactions.length; i++) {
-        var key = transactions[i].date + transactions[i].description + transactions[i].amount + transactions[i].source;
-        transactions[i].transactionId = getHash(key);
-    }
-
-    return transactions;
-};
-
-var mapCategories = function(transactions) {
-    // Get the categories and their keywords
-    var categories = categoriesList;
-
-    for(var i = 0; i < transactions.length; i++) {
-        for(var j = 0; j < categories.length; j++) {
-            if (transactions[i].description && matchInArray(categories[j].keywords, transactions[i].description)) {
-                transactions[i].category = categories[j].category;
-            }
-        }
-    }
-
-    return transactions;
-};
-
-
-var doesItemExist = function(id, collection) {
-    for(var j = 0; j < collection.length; j++) {
-        if(id === collection[j]) {
-            return true;
-        }
-    }
-    return false;
-};
-
-var matchInArray = function(array, match) {
-    var matched = false;
-    for(var i = 0; i < array.length; i++) {
-        matched = match.toUpperCase().indexOf(array[i].toUpperCase()) != -1;
-        if (matched) break;
-    }
-    return matched;
+var translateCsvRow = function(row) {
 };

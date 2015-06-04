@@ -17,7 +17,8 @@
     "request": "^2.51.0",
     "restler": "^3.2.2",
     "tough-cookie": "^0.12.1",
-    "sugar": "~1.4.1"
+    "sugar": "~1.4.1",
+    "fast-csv": "~0.6.0"
   },
   "engines": {
     "node": "0.10.31"
