@@ -21,7 +21,8 @@
   {
     "category": "Gas",
     "keywords": [
-      "SHELL OIL"
+      "SHELL OIL",
+      "EXXONMOBIL"
     ]
   },
   {
@@ -33,7 +34,8 @@
   {
     "category": "Cell Phones",
     "keywords": [
-      "STRAIGHTTALK*SERVICES"
+      "STRAIGHTTALK*SERVICES",
+      "TING"
     ]
   },
   {
@@ -66,7 +68,9 @@
     "category": "Entertainment",
     "keywords": [
       "NETFLIX",
-      "HLU*Hulu"
+      "HLU*Hulu",
+      "GOOGLE *Music",
+      "BARNES & NOBLE"
     ]
   },
   {
@@ -92,7 +96,12 @@
       "HANA SUSHI",
       "JUAN POLLO",
       "COLDSTONE",
-      "CHIPOTLE"
+      "CHIPOTLE",
+      "YOGURT FACTORY",
+      "SPROUTS",
+      "TRADER JOES",
+      "EAT24",
+      "OLIVE GARD"
     ]
   },
   {
@@ -132,7 +141,8 @@
   {
     "category": "Other Shopping",
     "keywords": [
-      "TCA FASTRAK"
+      "TCA FASTRAK",
+      "COVENANT EYES"
     ]
   },
   {
@@ -155,6 +165,29 @@
     "category": "Health Sharing",
     "keywords": [
       "ChristianCareMin"
+    ]
+  },
+  {
+    "category": "Health Insurance",
+    "keywords": []
+  },
+  {
+    "category": "Income",
+    "keywords": [
+      "APPLIED STATISTI"
+    ]
+  },
+  {
+    "category": "Unbudgeted",
+    "keywords": [
+      "MAID PRO"
+    ]
+  },
+  {
+    "category": "Exclude",
+    "keywords": [
+      "CAPITAL ONE N.A. CAPITALONE",
+      "ONLINE TRANSFER FROM"
     ]
   }
 ]
