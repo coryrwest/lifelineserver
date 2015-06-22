@@ -81,81 +81,130 @@ dal.get = function(object_name, params, success) {
 dal.insert = function(object_name, object, success) {
     var url = root + getDBName(object_name);
 
-    authenticate(request.post({
+    authenticate(function() {
+        request.post({
             url: url,
             body: object,
-            json: true
+            json: true,
+            headers: {
+                cookie: authCookie
+            }
         }, function(err, res, body) {
             if(err) {
                 throw err;
             }
+            // log it
+            if(object_name != 'log' && object_name != 'test') {
+                log(object_name + ' saved.', 'info', object);
+            }
 
-    //        var result = [], json = JSON.parse(body);
-    //        for(var i = 0; i <= json.rows.length - 1; i++) {
-    //            result.push(json.rows[i].value);
-    //        }
             success(body);
         })
-    );
+    });
 };
 dal.insertCollection = function(object_name, objects, success) {
     var url = root + getDBName(object_name) + "/_bulk_docs";
 
     var postData = { "docs" : objects };
 
-    authenticate(request.post({
-            url: url,
-            body: postData,
-            json: true
-        }, function(err, res, body) {
-            if(err) {
-                throw err;
-            }
+    authenticate(function() {
+            request.post({
+                url: url,
+                body: postData,
+                json: true,
+                headers: {
+                    cookie: authCookie
+                }
+            }, function(err, res, body) {
+                if(err) {
+                    throw err;
+                }
+                // log it
+                if(object_name != 'log' && object_name != 'test') {
+                    log(objects.length + ' ' + object_name + '\'s saved.', 'info', objects);
+                }
 
-            success(body);
-        })
-    );
+                success(body);
+            })
+        });
 };
 dal.update = function(object_name, object, success) {
+    if(!object._id) {
+        throw new Error('The objects _id was undefined.');
+    }
+
     var url = root + getDBName(object_name);
 
-        authenticate(function() {
+    authenticate(function() {
         request({
             method: 'PUT',
             uri: url + '/' + object._id,
             body: object,
-            json: true
+            json: true,
+            headers: {
+                cookie: authCookie
+            }
         }, function(err, res, body) {
             if(err) {
                 throw err;
             }
+            // log it
+            if(object_name != 'log' && object_name != 'test') {
+                log(object_name + ' updated.', 'info', object);
+            }
 
-//            var result = [], json = JSON.parse(body);
-//            for(var i = 0; i <= json.rows.length - 1; i++) {
-//                result.push(json.rows[i].value);
-//            }
             success(body);
         });
     });
 };
 dal.updateCollection = function(object_name, objects, success) {
 };
+var log = function(message, level, object) {
+    var logItem = {
+        message: message,
+        date: today,
+        time: time,
+        data: object,
+        level: level
+    };
 
+    var url = root + 'log_data';
+
+    authenticate(function() {
+        request.post({
+            url: url,
+            body: logItem,
+            json: true,
+            headers: {
+                cookie: authCookie
+            }
+        }, function(err, res, body) {
+            if(err) {
+                throw err;
+            }
+        })
+    });
+};
 // --------------
 // --- REMOVE ---
 // --------------
 dal.remove = function(object_name, id, rev, success) {
     var url = root + getDBName(object_name) + "/" + id + "?rev=" + rev;
 
-    authenticate(request.del(url, function(err, res, body) {
+    authenticate(function() {
+        request.del(url, function(err, res, body) {
             if(err) {
                 throw err;
+            }
+            // log it
+            if(object_name != 'log' && object_name != 'test') {
+                logger.saveEntry(object_name + ' removed.', 'info', {id: id, rev: rev});
             }
 
             var json = JSON.parse(body);
             success(json.ok);
         })
-    );
+    });
 };
 
 var convertDate = function(date) {
