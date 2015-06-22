@@ -60,6 +60,9 @@ dal.get = function(object_name, params, success) {
             url += "?key=\"" + params.date + "\"";
         }
     }
+    if(params.limit) {
+        url += '&limit=' + params.limit;
+    }
 
     authenticate(function() {
             request.get({url: url}, function(err, res, body) {

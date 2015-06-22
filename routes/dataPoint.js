@@ -16,12 +16,13 @@ var moment = require('moment-timezone');
  */
 router.get('/:object', function(req, res) {
     var start = req.query.start, end = req.query.end, date = req.query.date, view = req.query.view;
+    var limit = req.query.limit;
 
     var suc = function(data) {
         res.json(200, data);
     };
 
-    api.getRange(req.params.object, start, end, date, view, suc);
+    api.getRange(req.params.object, start, end, date, view, limit, suc);
 });
 
 /**

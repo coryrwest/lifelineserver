@@ -1,7 +1,7 @@
 var LogData = React.createClass({
     loadData: function() {
     $.ajax({
-        url: "/data/bank_data?view=byDate&start=" + moment().subtract(30, 'days').format('YYYY-MM-DD'),
+        url: "/data/bank_data?view=byDate&limit=60&start=" + moment().format('YYYY-MM-DD'),
         dataType: 'json',
         success: function(data) {
             this.setState({data: data});
