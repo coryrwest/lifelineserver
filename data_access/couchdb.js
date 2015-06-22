@@ -1,27 +1,38 @@
 // https://github.com/shiki/kaiseki
 var moment = require('moment-timezone');
+var today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD");
+var time = moment().tz("America/Los_Angeles").format('HH:mm:ss');
 // couchdb
 var request = require('request').defaults({jar: true});
 //var j = request.jar();
 //request.defaults({jar: true});
 request.debug = true;
-var root = process.env.ROOT || 'http://ssh.corywestropp.com:5984/';
+var root = process.env.ROOT || 'https://coryrwest.cloudant.com/';
+var authCookie = null;
 
 var dal = module.exports = {};
 
 function authenticate(authed) {
-    request({
-        method: 'POST',
-        uri: root + '_session',
-        form: {name:process.env.DBUSER,password:process.env.DBPASSWORD}
-    }, function(err,httpResponse,body){
-        if(err == null) {
-            console.log('Authenticated');
-            authed();
-        } else {
-            console.log(err);
-        }
-    });
+    var data = {name:process.env.DBUSER,password:process.env.DBPASSWORD};
+    if(authCookie == null) {
+        request({
+            method: 'POST',
+            uri: root + '_session',
+            form: data
+        }, function (err, res, body) {
+            if (err == null) {
+                console.log('Authenticated');
+                if (res.headers['set-cookie']) {
+                    authCookie = res.headers['set-cookie'][0];
+                }
+                authed();
+            } else {
+                throw err;
+            }
+        });
+    } else {
+        authed();
+    }
 }
 
 // -----------
@@ -44,7 +55,7 @@ dal.get = function(object_name, params, success) {
         }
     } else {
         if(params.start) {
-            url += "?startkey=\"" + params.start + "\"";
+            url += "?startkey=\"" + params.start + "\"&descending=true";
         } else if(params.date) {
             url += "?key=\"" + params.date + "\"";
         }
