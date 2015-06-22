@@ -1,0 +1,5 @@
+sudo npm install -g jasmine-node
+
+Then run:
+
+jasmine-node --config DBUSER coryrwest --config DBPASSWORD {PASS} --config ROOT https://coryrwest.cloudant.com/ specs/
