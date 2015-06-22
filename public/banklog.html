@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LifeLine</title>
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/site.css">
+    <script src="./js/jquery-2.1.1.min.js"></script>
+    <script src="./js/bootstrap.js"></script>
+    <script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
+    <script src="http://fb.me/react-with-addons-0.12.2.min.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
+    <script src="./js/moment.js"></script>
+    <script src="./js/banklogs.js" type="text/jsx"></script>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">LifeLine</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/doc">Docs</a></li>
+                <li><a href="/graph.html">Dashboard</a></li>
+                <li><a href="/logs.html">Logs</a></li>
+                <li><a href="/banklog.html">Bank Log</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Bank Transactions</h1>
+            <div id="logs"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
