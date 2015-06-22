@@ -163,18 +163,24 @@ var convertDate = function(date) {
 };
 var getDBName = function(object) {
     switch(object) {
-        case "water":
-        case "pick":
-        case "sore":
-        case "sick":
-            return "counter_data";
-        case "weather_data":
-            return "weather_data";
-        case "bank_data":
-            return "bank_data";
-        case "energy_data":
-            return "energy_data";
+        case 'water':
+        case 'pick':
+        case 'sore':
+        case 'sick':
+            return 'counter_data';
+        case 'weather_data':
+            return 'weather_data';
+        case 'bank_data':
+            return 'bank_data';
+        case 'energy_data':
+            return 'energy_data';
+        case 'sleep_data':
+            return 'sleep_data';
+        case 'test':
+            return 'test_db';
+        case 'log':
+            return 'log_data';
         default:
-            return "note_data";
+            return 'counter_data';
     }
 };

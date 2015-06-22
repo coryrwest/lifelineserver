@@ -34,27 +34,6 @@ helpers.createObjectIfEmpty = function(object) {
     return object;
 };
 
-//helpers.setObjectType = function(object, name) {
-//    switch(name) {
-//        case "water":
-//        case "pick":
-//        case "sore":
-//            object.objectType = "counter";
-//            break;
-//        case "sick":
-//            object.objectType = "onceaday";
-//            break;
-//        case "left_house":
-//        case "dailyNotes":
-//            object.objectType = "note";
-//            break;
-//        default:
-//            object.objectType = "custom";
-//            break;
-//    }
-//    return object;
-//};
-
 helpers.IsNotNull = function(object) {
     return object != null && object != undefined;
 };

@@ -27,7 +27,12 @@ api.getRange = function(object_name, start, end, date, view, suc) {
         params.view = view;
     }
 
-    couch.get(object_name, params, suc);
+    try {
+        couch.get(object_name, params, suc);
+    }
+    catch (ex) {
+        suc(ex);
+    }
 };
 
 api.insert = function (object_name, object, suc) {
@@ -41,7 +46,12 @@ api.insert = function (object_name, object, suc) {
         object = api.updateValue(object, object.change);
     }
 
-    couch.insert(object_name, object, suc);
+    try {
+        couch.insert(object_name, object, suc);
+    }
+    catch (ex) {
+        suc(ex);
+    }
 };
 
 api.insertCollection = function (object_name, objects, suc) {
@@ -57,7 +67,12 @@ api.insertCollection = function (object_name, objects, suc) {
         }
     }
 
-    couch.insertCollection(object_name, objects, suc);
+    try {
+        couch.insertCollection(object_name, objects, suc);
+    }
+    catch (ex) {
+        suc(ex);
+    }
 };
 
 api.update = function(object_name, id, object, body, suc) {
@@ -78,7 +93,12 @@ api.update = function(object_name, id, object, body, suc) {
             params.date = id;
         }
 
-        couch.get(object_name, params, success);
+        try {
+            couch.get(object_name, params, success);
+        }
+        catch (ex) {
+            success(ex);
+        }
 
         function success(data) {
             if(data == null) {
@@ -101,7 +121,12 @@ api.update = function(object_name, id, object, body, suc) {
         }
     } else {
         // Do update as normal
-        couch.get(object_name, {date: today}, normalSuc);
+        try {
+            couch.get(object_name, {date: today}, normalSuc);
+        }
+        catch (ex) {
+            normalSuc(ex);
+        }
 
         function normalSuc(data) {
             if(data == null) {
@@ -153,6 +178,31 @@ api.updateValue = function(object, change) {
     }
 
     return object;
+};
+
+api.handleResponse = function(body) {
+    var response = {
+        isError: false,
+        message: '',
+        data: {}
+    };
+
+    if(body.error) {
+        response.isError = true;
+        response.message = body.error + ': ' + body.reason;
+        response.data = body;
+    } else {
+        if(body instanceof Array) {
+            response.data = {
+                itemCount: body.length,
+                array: body
+            };
+        } else {
+            response.data = body;
+        }
+    }
+
+    return response;
 };
 
 var handleSpecialCases = function(object) {
